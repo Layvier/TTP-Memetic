@@ -15,8 +15,7 @@ public class Calendar implements Cloneable {
 	private int nbVilles; // nombre de villes participant au championnat
 	private int nbJournees;	// nombre de journées pour un championnat
 	private Journee[] journees; // tableau des journées du championnat
-	
-    // constructeur par défaut
+    // le constructeur par défaut 
 	public Calendar() {
 		this.nbJournees = 0;
 		this.nbVilles = 0;
