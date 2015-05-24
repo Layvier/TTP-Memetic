@@ -1,15 +1,22 @@
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Population {
-	public ArrayList<Calendar> pop;
+	public List<Cal> pop;
 	
 	
 	public Population(){
-		this.pop=null;
+		this.pop= new ArrayList<Cal>();
 	}
-	public void addCalendrier(Calendar cal){
+	public void addCalendrier(Cal cal){
 		this.pop.add(cal);
+	}
+	public int getSize(){
+		return pop.size();
+	}
+	public Cal getCal(int i){
+		return pop.get(i);
 	}
 	
 	

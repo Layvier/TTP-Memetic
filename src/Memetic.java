@@ -4,10 +4,13 @@ public class Memetic {
 	public Population pop;
 	public Population newpop;
 	public Calendar optimum;
-	public int coutopt;
+	public int optCost;
+	public int nbIteration;
+	public int sizePop;
+	public int nbCities;
+	public int nbDays;
 	
 	public Memetic(String fileName){
-		
 		this.pop = this.GenerateInitialPopulation();
 	}
 	public Population getPop(){
@@ -28,6 +31,12 @@ public class Memetic {
 	 */
 	public Population GenerateInitialPopulation(){
 		Population pop = new Population();
+		for(int i =0; i <this.sizePop; i++){
+			Cal cal = new Cal(this.nbCities, this.nbDays);
+			cal.random();
+			cal.makeValid();
+			pop.addCalendrier(cal);
+		}
 		return pop;
 	}
 	/**
@@ -37,6 +46,11 @@ public class Memetic {
 	 */
 	public Population GenerateNewPopulation(Population pop){
 		Population newpop = new Population();
+		for(int i=0; i< pop.getSize(); i =i+2){
+			Cal cal = new Cal(this.nbCities, this.nbDays);
+			cal.crossover(pop.getCal(i), pop.getCal(i+1));
+			newpop.addCalendrier(cal);
+		}
 		return newpop;
 	}
 	/**
@@ -46,16 +60,23 @@ public class Memetic {
 	 * @return
 	 */
 	public Population UpdatePopulation(Population pop, Population newpop){
+		
 		return pop;
 	}
 	public Calendar getBest(Population pop){
 		return null;
+	}
+	public int getCost(Cal cal){
+		
+		return 0;
 	}
 	/**
 	 * return the optimal solution found with this set of data and the parameters.
 	 * @return
 	 */
 	public Calendar GlobalMemetic(int sizePop, int nbIteration){
+		this.nbIteration= nbIteration;
+		this.sizePop= sizePop;
 		Population pop = this.GenerateInitialPopulation();
 		Population newpop = null;
 		int i=0;
