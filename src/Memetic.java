@@ -52,6 +52,7 @@ public class Memetic {
 		for(int i=0; i< pop.getSize(); i =i+2){
 			Cal cal = new Cal(this.nbCities, this.nbDays);
 			cal.crossover(pop.getCal(i), pop.getCal(i+1));
+			cal.makeValid();
 			newpop.addCalendrier(cal);
 		}
 		return newpop;

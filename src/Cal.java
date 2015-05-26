@@ -42,11 +42,12 @@ public class Cal {
 					}
 					if(k==1){
 						this.addMatch(parent2.getMatch(i, j), parent2.getTimeMatch(i, j));
+						this.addMatch(parent2.getOpposite(parent2.getMatch(i, j)), parent2.getTimeMatch(parent2.getOpposite(parent2.getMatch(i, j))));
 					}
 				}
 			}
 		}
-		this.makeValid();
+		//this.makeValid();
 	}
 	public void random(){
 		for(int i = 1; i < nbcities; i++){
