@@ -125,11 +125,29 @@ public class Cal {
 	public boolean oneMatchPerDay(){// a implémenter
 		int doublon = -1;
 		int missing = -1;
-		for(int i=0; i < this.nbdays; i++){
-			if(this.Doublon(i)){
-				doublon = this.getDoublon(i);
-				missing = this.getMissing(i);
+		int c =-1;
+		Match m;
+		for(int day=0; day< this.nbdays; day++){
+			if(this.Doublon(day)){
+				doublon = this.getDoublon(day);
+				missing = this.getMissing(day);
+				m = this.getMatchContaining(doublon, day);
+				if(m.getExt() == doublon){
+					c = m.getHome();
+				}
+				else if(m.getHome() == doublon){
+					c= m.getExt();
+				}
+				if(this.getTimeMatch(missing, c) > day){
+					this.switchMatch(m, this.getMatch(missing, c));
+					System.out.println("switch "+m+" et "+this.getMatch(missing, c) );
+				}
+				else{
+					this.switchMatch( this.getMatch(c, missing), m);
+				}
+				
 			}
+			
 		}
 		return true;
 	}
@@ -140,12 +158,33 @@ public class Cal {
 	 * return the first city that plays twice this day, -1 if none
 	 */
 	public int getDoublon(int day){// a implémenter
+		int[] nbMatchs = new int[this.nbcities];
+		for(int j=0; j <this.nbcities; j++){
+			if(nbMatchs[j] > 1){
+				return j;
+			}
+		}
 		return -1;
 	}
 	public int getMissing(int day){// a implémenter
+		int[] nbMatchs = new int[this.nbcities];
+		for(int j=0; j <this.nbcities; j++){
+			if(nbMatchs[j] < 1){
+				return j;
+			}
+		}
 		return -1;
 	}
-	public boolean Doublon(int day){// a implementer
+	public Match getMatchContaining(int city, int day){
+		for(int i =0; i < this.days[day].size(); i++){
+			if(this.days[day].get(i).contains(city)){
+				return this.days[day].get(i);
+			}
+		}
+		System.err.println("Aucun match trouvé");
+		return null;
+	}
+	public int[] getArrayDay(int day){
 		int[] nbMatchs = new int[this.nbcities];
 		for(int i = 0; i < this.nbcities; i++){
 			nbMatchs[i] = 0;
@@ -154,6 +193,10 @@ public class Cal {
 			nbMatchs[this.days[day].get(i).getHome()-1]++;
 			nbMatchs[this.days[day].get(i).getExt()-1]++;
 		}
+		return nbMatchs;
+	}
+	public boolean Doublon(int day){// a implementer
+		int[] nbMatchs = this.getArrayDay(day);
 		for(int j=0; j <this.nbcities; j++){
 			if(nbMatchs[j] > 1){
 				System.out.println("doublon ville"+(j+1)+" jour "+day);
