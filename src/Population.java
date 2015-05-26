@@ -18,6 +18,11 @@ public class Population {
 	public Cal getCal(int i){
 		return pop.get(i);
 	}
-	
+	public Cal getBest(){
+		return pop.get(0);
+	}
+	public void localSearch(){
+		
+	}
 	
 }
