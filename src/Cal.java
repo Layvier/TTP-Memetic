@@ -75,8 +75,9 @@ public class Cal {
 	}
 	public void makeValid(){// a implémenter
 		this.standardize();// nbcities/2 matchs per day
+		this.print();
 		//this.allMatchSet();//all different matchs are played
-		//this.oneMatchPerDay();// only and exactly one match per city per day
+		this.oneMatchPerDay();// only and exactly one match per city per day
 		//this.noLazyCity();//each city must not receive 4 matchs in a row, nor go to others cities 4 times in a row.
 	}
 	/**
@@ -122,6 +123,14 @@ public class Cal {
 	 * Make sure each city plays only once each day
 	 */
 	public boolean oneMatchPerDay(){// a implémenter
+		int doublon = -1;
+		int missing = -1;
+		for(int i=0; i < this.nbdays; i++){
+			if(this.Doublon(i)){
+				doublon = this.getDoublon(i);
+				missing = this.getMissing(i);
+			}
+		}
 		return true;
 	}
 	public boolean noLazyCity(){//a implémenter
@@ -132,6 +141,32 @@ public class Cal {
 	 */
 	public int getDoublon(int day){// a implémenter
 		return -1;
+	}
+	public int getMissing(int day){// a implémenter
+		return -1;
+	}
+	public boolean Doublon(int day){// a implementer
+		int[] nbMatchs = new int[this.nbcities];
+		for(int i = 0; i < this.nbcities; i++){
+			nbMatchs[i] = 0;
+		}
+		for(int i =0; i < this.days[day].size(); i++){
+			nbMatchs[this.days[day].get(i).getHome()-1]++;
+			nbMatchs[this.days[day].get(i).getExt()-1]++;
+		}
+		for(int j=0; j <this.nbcities; j++){
+			if(nbMatchs[j] > 1){
+				System.out.println("doublon ville"+(j+1)+" jour "+day);
+				return false;
+				
+			}
+			if(nbMatchs[j] == 0){
+				System.out.println("pas ville"+(j+1)+" jour "+day);
+				return false;
+				
+			}
+		}
+		return true;
 	}
 	public int[][] toArray(){//a implementer
 		return null;
