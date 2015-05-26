@@ -13,6 +13,7 @@ public class Cal {
 	
 	public Cal(int nbcities, int nbdays){//creates a calendar null. 
 		days = new ArrayList[nbdays];
+		this.meetingTime = new HashMap<Match, Integer>();
 		this.setMatchs = new Match[nbcities][nbcities];
 		for(int i = 0 ; i < nbdays ; i++){
 			days[i] = new ArrayList<Match>();
@@ -20,13 +21,16 @@ public class Cal {
 		this.nbdays = nbdays;
 		this.nbcities = nbcities;
 		
-		for(int i = 1; i < nbcities; i++){
+		for(int i = 1; i <= nbcities; i++){
 			for(int j=1; j <= nbcities; j++ ){
 				if(i!=j){
 					Match match = new Match(i, j);
-					this.setMatchs[i][j]=match;
 					this.meetingTime.put(match, -1);
+					this.setMatchs[i-1][j-1]=match;
 					}
+				else{
+					this.setMatchs[i-1][j-1]=null;
+				}
 				
 			}
 		}
@@ -39,24 +43,25 @@ public class Cal {
 					if(k== -1){
 						this.addMatch(parent1.getMatch(i, j), parent1.getTimeMatch(i, j));
 						this.addMatch(parent1.getOpposite(parent1.getMatch(i, j)), parent1.getTimeMatch(parent1.getOpposite(parent1.getMatch(i, j))));
+						k=k*(-1);
 					}
 					if(k==1){
 						this.addMatch(parent2.getMatch(i, j), parent2.getTimeMatch(i, j));
 						this.addMatch(parent2.getOpposite(parent2.getMatch(i, j)), parent2.getTimeMatch(parent2.getOpposite(parent2.getMatch(i, j))));
+						k=k*(-1);
 					}
 				}
 			}
 		}
-		//this.makeValid();
 	}
 	public void random(){
-		for(int i = 1; i < nbcities; i++){
+		for(int i = 1; i <= nbcities; i++){
 			for(int j=1; j <= nbcities; j++ ){
 				if(i!=j){
-					Match match = new Match(i, j);
-					this.setMatchs[i][j]=match;
-					this.meetingTime.put(match, -1);
-					this.addMatch(i,j , (int)Math.random()*this.nbdays);
+					Match match = this.getMatch(i, j);
+					int l =(int)(Math.random()*this.nbdays);
+					this.meetingTime.put(match, l);
+					this.addMatch(i,j , l);
 					}
 				
 			}
@@ -70,27 +75,48 @@ public class Cal {
 	}
 	public void makeValid(){// a implémenter
 		this.standardize();// nbcities/2 matchs per day
-		this.allMatchSet();//all different matchs are played
-		this.oneMatchPerDay();// only and exactly one match per city per day
-		this.noLazyCity();//each city must not receive 4 matchs in a row, nor go to others cities 4 times in a row.
+		//this.allMatchSet();//all different matchs are played
+		//this.oneMatchPerDay();// only and exactly one match per city per day
+		//this.noLazyCity();//each city must not receive 4 matchs in a row, nor go to others cities 4 times in a row.
 	}
 	/**
 	 * Make sure that the calendar have the required amount of matchs each day, and no more.
 	 */
 	public void standardize(){// a implémenter
 		int k = -1;
+		Match m1 = null;
+		while(!this.isStandardized()){
 		for(int i =0; i< this.nbdays; i++){// for each day
-			if(this.days[i].size() > this.nbcities/2){//if more than 3 matchs
-				Match m1 = this.days[i].get(0);
-				if(k != -1){
-					this.moveMatch(m1, k);
+			if(this.moreThanExpected(i)){//if more than 3 matchs
+				m1 = this.days[i].get(0);
+			}
+			else{
+				if(this.lessThanExpected(i)){
+					k = i;
 				}
 			}
-			if(this.days[i].size() < this.nbcities/2){
-				k = i;
+			if(k !=-1 && m1 !=null){
+				this.moveMatch(m1, k);
+				k = -1;
+				m1 = null;
 			}
 			
 		}
+		}
+	}
+	public boolean isStandardized(){
+		for(int i =0; i< this.nbdays; i++){
+			if(this.days[i].size() != this.nbcities/2){
+				return false;
+			}
+		}
+		return true;
+	}
+	public boolean moreThanExpected(int day){
+		return this.days[day].size() > this.nbcities/2;
+	}
+	public boolean lessThanExpected(int day){
+		return this.days[day].size() < this.nbcities/2;
 	}
 	/**
 	 * Make sure each city plays only once each day
@@ -142,7 +168,7 @@ public class Cal {
 		return this.setMatchs[m.getExt()][m.getHome()];
 	}
 	public Match getMatch(int home, int ext){
-		return this.setMatchs[home][ext];
+		return this.setMatchs[home-1][ext-1];
 	}
 	public int getTimeMatch(int home, int ext){
 		return this.meetingTime.get(this.setMatchs[home][ext]);
@@ -151,7 +177,7 @@ public class Cal {
 		return this.meetingTime.get(m);
 	}
 	public void addMatch(int home, int ext, int day){
-		Match match = this.setMatchs[home][ext];
+		Match match = this.setMatchs[home-1][ext-1];
 		this.meetingTime.put(match, day);
 		this.days[day].add(match);
 		System.out.println("ajout du match "+match+"en "+day);
@@ -166,8 +192,9 @@ public class Cal {
 	 */
 	public void print(){//a implementer
 		for(int i = 0; i < this.nbdays; i++){
+			System.out.print("Day "+i);
 			for(int j=0; j < this.days[i].size(); j++){
-				System.out.println(this.days[i].get(j).toString());
+				System.out.print(this.days[i].get(j).toString());
 			}
 			System.out.println("");
 		}

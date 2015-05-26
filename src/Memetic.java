@@ -95,6 +95,9 @@ public class Memetic {
 		Cal cal = new Cal(memetic.nbCities, memetic.nbDays);
 		cal.random();
 		cal.print();
+		System.out.println("make valid :");
+		cal.makeValid();
+		cal.print();
 		//Cal calopt = memetic.GlobalMemetic(50, 10);
 		//calopt.print();
 	}
